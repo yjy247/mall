@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mall
+  namespace: mall
+  labels:
+    app: mall
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: mall
+      labels:
+        app: mall
+    spec:
+      containers:
+        - name:  mall
+          image: 192.168.195.129:5000/mall:v1
+          imagePullPolicy: Always
+      restartPolicy: Always
+      nodeName: k8smaster
+  selector:
+    matchLabels:
+      app: mall
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mall
+  namespace: mall
+spec:
+  selector:
+    app: mall
+  ports:
+    - port: 8080
+      nodePort: 30900
+  type: NodePort
